@@ -1,5 +1,7 @@
-18.00
-enigma2-plugin-extensions-csfd_18.00-20230919_all.ipk
+19.00
+enigma2-plugin-extensions-csfd_19.00-20260705_all.ipk
 Hlavné zmeny:
+19.00:
+- prepisanie povodnej implementacie CSFD Android client na novy webovy client (scraping) z dovodu prechodu CSFD na novu verziu API
 18.00:
 - pridanie podpory pre WQHD skiny (thx durinov)
