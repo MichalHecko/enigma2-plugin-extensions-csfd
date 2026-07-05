@@ -293,7 +293,7 @@ def getBoxtypeCSFD():
 			model = '900'
 
 	version, enigma = Uni8(getBoxArch())
-	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - box=' + box + '\n')
+	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - box=' + str(box) + '\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - Model=' + model + '; Image=' + version + '; Enigma=' + enigma + '\n')
 	LogCSFD.WriteToFile('[CSFD] CSFDTools - BoxType - konec\n')
 	return (model, version, enigma)
