@@ -151,6 +151,18 @@ def _norm_img(url, size='w420'):
 	return url
 
 
+def _img_src(tag):
+	# ČSFD lazy-loaduje obrazky: realna URL je v data-src/srcset, src byva base64 placeholder
+	for attr in ('data-src', 'data-srcset', 'srcset'):
+		m = re.search(r'%s="([^"]+)"' % attr, tag)
+		if m:
+			return m.group(1).split(',')[0].strip().split(' ')[0]
+	m = re.search(r'src="([^"]+)"', tag)
+	if m and not m.group(1).startswith('data:'):
+		return m.group(1)
+	return None  # empty-image placeholder -> film nema poster
+
+
 def _split_name(fullname):
 	fullname = _strip_tags(fullname)
 	parts = fullname.split()
@@ -494,9 +506,9 @@ class CSFDClient:
 
 		# plakat
 		info['poster_url'] = None
-		mp = re.search(r'film-posters">.*?<img[^>]*src="([^"]+)"', html_text, re.DOTALL)
+		mp = re.search(r'film-posters">.*?(<img[^>]*>)', html_text, re.DOTALL)
 		if mp:
-			info['poster_url'] = _norm_img(mp.group(1))
+			info['poster_url'] = _norm_img(_img_src(mp.group(1)))
 
 		# obsah (plot)
 		info['plot'] = {'text': '', 'source_name': ''}

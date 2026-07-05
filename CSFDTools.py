@@ -178,7 +178,12 @@ def requestFileCSFD(url='', fileout='' ):
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - Neni co stahovat\n')
 		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - konec\n')
 		return False
-	
+
+	if not url.startswith('http'):
+		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - URL nezacina "http", PRESKAKUJI\n')
+		LogCSFD.WriteToFile('[CSFD] CSFDTools - requestFileCSFD - konec\n')
+		return False
+
 	timeout = config.misc.CSFD.DownloadTimeOut.getValue()
 	ret = True
 	
