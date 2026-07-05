@@ -238,16 +238,16 @@ class CSFDClient:
 			LogCSFD.WriteToFile('[CSFD] _get vynimka:\n%s\n' % traceback.format_exc(), 2)
 			return None
 
-		# TODO: Zakomentovat
-		LogCSFD.WriteToFile('[CSFD] _get - %s -> status %d, len %d\n%s\n' % (url, r.status_code, len(r.text), r.text), 2)
+		# DEBUG: Zologovanie obsahu stiahnuteho HTML
+		# LogCSFD.WriteToFile('[CSFD] _get - %s -> status %d, len %d\n%s\n' % (url, r.status_code, len(r.text), r.text), 2)
 
 		if r.status_code == 200 and 'anubis_challenge' in r.text:
 			if self._solve_anubis(r.text):
 				try:
 					r = self.session.get(url, timeout=_timeout(), allow_redirects=True)
 
-					# TODO: Zakomentovat
-					LogCSFD.WriteToFile('[CSFD] _get (po Anubis) - %s -> status %d, len %d\n%s\n' % (url, r.status_code, len(r.text), r.text), 2)
+					# DEBUG: Zologovanie obsahu stiahnuteho HTML
+					# LogCSFD.WriteToFile('[CSFD] _get (po Anubis) - %s -> status %d, len %d\n%s\n' % (url, r.status_code, len(r.text), r.text), 2)
 				except Exception:
 					return None
 			else:
