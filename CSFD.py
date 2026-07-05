@@ -5768,7 +5768,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		else:
 			file_ver = CSFDGlobalVar.getCSFDadresarTMP() + 'CSFDversion.txt'
 		try:
-			text_file = open(file_ver, 'r')
+			text_file = open(file_ver, 'r', encoding="utf-8")
 			tmp_infolines = text_file.readlines()
 			text_file.close()
 		except:
