@@ -28,7 +28,7 @@ from .CSFDMovieCache import TVMovieCache
 from .CSFDParser import ParserCSFD
 from .CSFDSkinLoader import *
 import datetime, time, traceback
-from .CSFDAndroidClient import csfdAndroidClient
+from .CSFDClient import csfdClient
 from .compat import eConnectCallback
 
 try:
@@ -303,13 +303,13 @@ def RefreshPlugins():
 	from Components.PluginComponent import plugins
 	from .CSFDTools import InitCSFDTools
 	from .CSFDSettings2 import PathTMPInit, localeInit, InitParamsLangImpact
-	from .CSFDAndroidClient import CreateCSFDAndroidClient
+	from .CSFDClient import CreateCSFDClient
 	LogCSFD.LoadDefaults()
 	PathTMPInit()
 	localeInit()
 	InitParamsLangImpact()
 	InitCSFDTools()
-	CreateCSFDAndroidClient()
+	CreateCSFDClient()
 	plugins.clearPluginList()
 	plugins.readPluginList(resolveFilename(SCOPE_PLUGINS))
 	LogCSFD.WriteToFile('[CSFD] RefreshPlugins - konec\n')

@@ -44,7 +44,7 @@ try:
 except:
 	from urllib import quote
 
-from .CSFDAndroidClient import csfdAndroidClient, CreateCSFDAndroidClient
+from .CSFDClient import csfdClient, CreateCSFDClient
 
 LogCSFD.WriteToFile('[CSFD] Iniciace modulu CSFD.py* - zacatek\n')
 deletetmpfiles()
@@ -720,7 +720,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 				mainServiceMenu.append((ar + _('Uložit video'), 'ulozvideo'))
 				mainServiceMenu.append((ar + _('Spustit video ukázku'), 'spustitvideo'))
 		mainServiceMenu.append((ar + _('Nastavení'), 'nastaveni'))
-		if csfdAndroidClient.is_logged():
+		if csfdClient.is_logged():
 			mainServiceMenu.append((ar + _('Odhlásit se z ČSFD'), 'logout'))
 		mainServiceMenu.append((ar + _('Stáhnout novou verzi pluginu'), 'novaverze'))
 		mainServiceMenu.append((ar + _('Změna skinu'), 'skin'))
@@ -1100,7 +1100,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		self.AntiFreezeTimerWorking = True
 		LogCSFD.WriteToFile('[CSFD] ScreenLogoutClose - zacatek\n')
 		if answer == True:
-			csfdAndroidClient.logout()
+			csfdClient.logout()
 			config.misc.CSFD.TokenCSFD.setValue('')
 			config.misc.CSFD.TokenCSFD.save()
 			config.misc.CSFD.LoginToCSFD.setValue(False)
@@ -2564,7 +2564,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		# if it is enabled and we have position code of episode, then we try to search
 		# directly for episode or serie link here
 		if show_episode_detail and self.event_info['position_code'] != '':
-			ParserCSFD.setJson( csfdAndroidClient.get_json_by_uri( fetchurl, load_full=False ) )
+			ParserCSFD.setJson( csfdClient.get_json_by_uri( fetchurl, load_full=False ) )
 			
 			if ParserCSFD.testJson():
 				if self.event_info['position_code_e'] is None:
@@ -2586,11 +2586,11 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 #					LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - position code movie_info: %s\n' % movie_info['position_code'], 2)
 					if movie_info['position_code'] == event_pc:
 						LogCSFD.WriteToFile('[CSFD] DownloadDetailMovie - found season/episode %s: %s\n' % (movie_info['position_code'], str(movie_info['id'])), 2)
-						data = csfdAndroidClient.get_json_by_uri( '#movie#' + str(movie_info['id']) )
+						data = csfdClient.get_json_by_uri( '#movie#' + str(movie_info['id']) )
 						break
 		
 		if data is None:
-			data = csfdAndroidClient.get_json_by_uri( fetchurl )
+			data = csfdClient.get_json_by_uri( fetchurl )
 			
 		ParserCSFD.setJson( data )
 		
@@ -2622,7 +2622,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - zacatek\n', 3)
 		LogCSFD.WriteToFile('[CSFD] ReDownloadMovieAndParseMainPart - stahuji z url ' + self.LastDownloadedMovieUrl + '\n', 3)
 		
-		data = csfdAndroidClient.get_json_by_uri( self.LastDownloadedMovieUrl )
+		data = csfdClient.get_json_by_uri( self.LastDownloadedMovieUrl )
 		ParserCSFD.setJson( data )
 
 		self.CSFDParseMainPart()
@@ -3090,7 +3090,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 			LogCSFD.WriteToFile('[CSFD] getCSFD - stahuji z url ' + fetchurl + '\n')
 			
-			page = csfdAndroidClient.get_json_by_uri( fetchurl )
+			page = csfdClient.get_json_by_uri( fetchurl )
 			CSFDGlobalVar.setParalelDownload(self.CSFDquery, page)
 			self.DownloadTimer.start(10, True)
 			
@@ -3496,7 +3496,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 	def CSFDparseUser(self):
 		LogCSFD.WriteToFile('[CSFD] parseUser - zacatek\n')
-		resultText = csfdAndroidClient.get_logged_user()[0]
+		resultText = csfdClient.get_logged_user()[0]
 		if resultText is not None and resultText != '':
 			LogCSFD.WriteToFile('[CSFD] parseUser - Logged User: ' + Uni8(resultText) + '\n')
 			self.LoggedUser = resultText
@@ -3504,7 +3504,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			self.setTitle(sss)
 		else:
 			if config.misc.CSFD.LoginToCSFD.getValue():
-				CreateCSFDAndroidClient()
+				CreateCSFDClient()
 			self.LoggedUser = ''
 			sss = _('Filmová databáze CSFD') + '  -  ' + _('Verze: ') + ' ' + strUni(self.versionCSFD)
 			self.setTitle(sss)
@@ -3896,7 +3896,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - linkSpec ' + self.linkSpec + '\n')
 			
 			if self.linkSpec.startswith('#'):
-				page = csfdAndroidClient.get_json_by_uri(self.linkSpec, self.PageSpec )
+				page = csfdClient.get_json_by_uri(self.linkSpec, self.PageSpec )
 				CSFDGlobalVar.setParalelDownload(self.CSFDquerySpec, page)
 				self.DownloadTimer.start(10, True)
 		LogCSFD.WriteToFile('[CSFD] CSFDshowSpec - konec\n')
@@ -4303,7 +4303,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		porVF = 0
 		
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - stahuji z url ' + id_filmu + '\n')
-		result = csfdAndroidClient.get_json_by_uri( '#movie_videos#' + id_filmu )
+		result = csfdClient.get_json_by_uri( '#movie_videos#' + id_filmu )
 
 		results = ParserCSFD.parserVideoDetail(result, config.misc.CSFD.VideoResolution.getValue(), config.misc.CSFD.QualityVideoPoster.getValue())
 		LogCSFD.WriteToFile('[CSFD] CSFDAllVideoDownload - parserVideoDetail\n')
@@ -4487,7 +4487,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 #			timeoutGall = config.misc.CSFD.DownloadTimeOut.getValue()
 			
-			result = csfdAndroidClient.get_json_by_uri( '#movie_photos#' + id_filmu )
+			result = csfdClient.get_json_by_uri( '#movie_photos#' + id_filmu )
 			
 			if self.PosterBasicCountPixAllG < 0:
 				self.PosterBasicCountPixAllG = len(result["photos"])
@@ -4772,7 +4772,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		def SaveRatingOnWeb(value_rating):
 			LogCSFD.WriteToFile('[CSFD] SaveRatingOnWeb - zacatek\n', 8)
-			if csfdAndroidClient.set_movie_rating( linkG, value_rating ) != None:
+			if csfdClient.set_movie_rating( linkG, value_rating ) != None:
 				if linkG == self.linkGlobal:
 					reloadMovieAfterRating(True)
 				else:
@@ -5557,7 +5557,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 		LogCSFD.WriteToFile(txt, 9)
 
 		txt = _('Zkouším funkčnost přihlášení')
-		if csfdAndroidClient.is_logged():
+		if csfdClient.is_logged():
 			txt += ' ..... OK\n'
 			console.addText(text=txt, typeText=0)
 			LogCSFD.WriteToFile(txt, 9)
@@ -5567,9 +5567,9 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile(txt, 9)
 
 			txt = _('Zkouším se zalogovat na stránky CSFD')
-			CreateCSFDAndroidClient( True )
+			CreateCSFDClient( True )
 			
-			if csfdAndroidClient.is_logged():
+			if csfdClient.is_logged():
 				txt += ' ..... OK\n'
 			else:
 				txt += ' ..... ERR\n'
@@ -5578,12 +5578,12 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 			LogCSFD.WriteToFile(txt, 9)
 		
 		txt = _('Ověřuji přihlášení na CSFD')
-		if csfdAndroidClient.get_user_identity() != None:
+		if csfdClient.get_user_identity() != None:
 			txt += ' ..... OK\n'
 		else:
 			txt += ' ..... ERR\n'
 			txt += _('Resetuju přihlašovací token - zkuste spustit tenhle test ješte jednou') + '\n'
-			csfdAndroidClient.logout()
+			csfdClient.logout()
 			config.misc.CSFD.TokenCSFD.setValue('')
 			config.misc.CSFD.TokenCSFD.save()
 			
@@ -5592,7 +5592,7 @@ class CSFDClass(Screen, CSFDHelpableScreen):
 
 		txt = _('Zjišťuji zalogovaného uživatele na CSFD')
 		loggedUser = False
-		user = csfdAndroidClient.get_logged_user()[0]
+		user = csfdClient.get_logged_user()[0]
 		if user is not None and user != '':
 			loggedUser = True
 			txt += ' ..... OK\n'

@@ -7,7 +7,7 @@ from datetime import datetime
 import re, traceback
 from itertools import islice
 
-from .CSFDAndroidClient import csfdAndroidClient
+from .CSFDClient import csfdClient
 
 correction_const02a = [
  ' pt1', ' part 1', ' part1', ' pt2', ' part 2', ' part2', ' pt3', ' part 3', ' part3']
@@ -486,7 +486,7 @@ class CSFDParser():
 		searchresults = []
 				
 		try:
-			for movie in csfdAndroidClient.get_movie_episodes( movie_id, 0, 0 )["seasons"]:
+			for movie in csfdClient.get_movie_episodes( movie_id, 0, 0 )["seasons"]:
 				if movie["year"] is not None:
 					searchresults.append( movie["year"] )
 		except:
@@ -534,7 +534,7 @@ class CSFDParser():
 		
 		try:
 			if "related" not in self.json_data:
-				self.json_data["related"] = csfdAndroidClient.get_movie_related( self.json_data["info"]["id"], 0, 50 )["related"]
+				self.json_data["related"] = csfdClient.get_movie_related( self.json_data["info"]["id"], 0, 50 )["related"]
 
 			movie_info = self.json_data["related"]
 			
@@ -561,7 +561,7 @@ class CSFDParser():
 		
 		try:
 			if "similar" not in self.json_data:
-				self.json_data["similar"] = csfdAndroidClient.get_movie_similar( self.json_data["info"]["id"], 0, 50 )["similar"]
+				self.json_data["similar"] = csfdClient.get_movie_similar( self.json_data["info"]["id"], 0, 50 )["similar"]
 
 			movie_info = self.json_data["similar"]
 			
@@ -590,7 +590,7 @@ class CSFDParser():
 		
 		if type_id in (movieType.SERIAL_WITH_EPISODES, movieType.SHOW_WITH_EPISODES, movieType.EPISODE) and self.json_data["info"]["has_no_seasons"] == False:
 			if "seasons" not in self.json_data:
-				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
+				self.json_data["seasons"] = csfdClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 				
 			for movie in self.json_data["seasons"]:
 				position_code = movie['episodes'][0]['position_code']
@@ -622,7 +622,7 @@ class CSFDParser():
 		type_id = self.json_data["info"]["type_id"]
 		if type_id in (movieType.SERIAL_WITH_EPISODES, movieType.SHOW_WITH_EPISODES, movieType.SERIE):
 			if "seasons" not in self.json_data:
-				self.json_data["seasons"] = csfdAndroidClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
+				self.json_data["seasons"] = csfdClient.get_movie_episodes( self.json_data["info"]["id"], 0, 0 )["seasons"]
 
 			for season in self.json_data["seasons"]:
 				for movie in season["episodes"]:
